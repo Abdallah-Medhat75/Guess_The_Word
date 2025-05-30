@@ -139,12 +139,13 @@ document.onkeydown = function (event) {
 guessButton.addEventListener("click", handleGuess);
 guessButton.addEventListener("click", disablingInputs);
 function hinting() {
-    if (numberOfHints !== 0) {
+    let inDisabledInputs = document.querySelectorAll(".inputs > div:not(.disabled-inputs) input");
+    if (numberOfHints !== 0 && inDisabledInputs.length !== 0) {
         let randomIndex = Math.trunc(Math.random() * wordToGuess.length);
         let stash = randomIndex;
         // let inActiveInputs = document.querySelectorAll(".inputs > div:not(.disabled-inputs) input");
         randomIndex = Math.trunc(Math.random() * wordToGuess.length);
-        let randomInput = document.querySelectorAll(".inputs > div:not(.disabled-inputs) input")[randomIndex];
+        randomInput = inDisabledInputs[randomIndex];
         console.log(`This is randomIndex ${randomIndex}`);
         console.log(`This is the stash ${stash}`);
         if (randomIndex === stash || randomInput.value !== "") {
