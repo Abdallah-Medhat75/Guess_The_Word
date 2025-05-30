@@ -21,10 +21,10 @@ h1 {
 /* End Global Rules */
 .guess-game {
     text-align: center;
-    width: 1000px;
-    margin: 20px auto;
     display: flex;
-    align-items: flex-start;
+    flex-direction: column;
+    margin: 20px auto;
+    align-items: center;
     justify-content: space-between;
     .game-area {
         .inputs {
@@ -47,7 +47,7 @@ h1 {
                 }
             }
             input {
-                --mainWidth: 50px;
+                --mainWidth: 40px;
                 margin: 0 5px;
                 width: var(--mainWidth);
                 height: var(--mainWidth);
@@ -77,7 +77,6 @@ h1 {
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 385px;
             margin: 30px auto;
             gap: 10px;
             .check {
@@ -90,8 +89,8 @@ h1 {
             }
             button {
                 border: none;
-                font-size: 25px;
-                padding: 10px 20px;
+                font-size: 20px;
+                padding: 10px;
                 border-radius: 6px;
                 color: white;
                 cursor: pointer;
@@ -130,7 +129,7 @@ h1 {
                 }
             }
             .key-text {
-                font-size: 20px;
+                font-size: 17px;
                 font-weight: bold;
             }
         }
@@ -155,14 +154,38 @@ h1 {
 footer {
     text-align: center;
     padding: 20px;
-    position: fixed;
+    /* position: sticky;
     bottom: 0;
-    left: 0;
+    left: 0; */
     width: 100%;
     background-color: #333;
     color: white;
     span {
         color: var(--primaryColor);
         font-weight: bold;
+    }
+}
+@media (min-width: 1000px) {
+    .guess-game {
+        width: 1000px;
+        flex-direction: row;
+    }
+    footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+    }
+    .control {
+        width: 385px;
+    }
+    .guess-game .game-area .inputs > div input {
+        --mainWidth: 50px;
+    }
+    .guess-game .key-colors .key-color .key-text {
+        font-size: 20px;
+    }
+    .guess-game .game-area .control .hint {
+        font-size: 25px;
+        padding: 10px 20px;
     }
 }
