@@ -52,6 +52,14 @@ function inputStyling() {
                 this.blur();
                 if (i !== 0) inputs[i - 1].focus();
             }
+            function forceMaxLength() {
+                let inputs = document.querySelectorAll("input");
+                let max = inputs[0].getAttribute("maxlength");
+                for (let i = 0; i < inputs.length; ++i) {
+                    inputs[i].value = inputs[i].value.slice(0, max);
+                }
+            }
+            forceMaxLength();
         }
         inputs[i].onkeydown = function (event) {
             // let currentIndex = inputs.indexOf(event.target); Search Why This One Doesn't Work
@@ -97,14 +105,6 @@ function generateInputs() {
 }
 window.onload = function () {
     generateInputs(); 
-    function forceMaxLength() {
-        let inputs = document.querySelectorAll("input");
-        let max = inputs[0].getAttribute("maxlength");
-        for (let i = 0; i < inputs.length; ++i) {
-            inputs[i].value = inputs[i].value.slice(0, max);
-        }
-    }
-    forceMaxLength();
 }
 console.log(wordToGuess);
 function handleGuess() {
