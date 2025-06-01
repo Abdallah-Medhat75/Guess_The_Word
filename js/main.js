@@ -97,6 +97,14 @@ function generateInputs() {
 }
 window.onload = function () {
     generateInputs(); 
+    function forceMaxLength() {
+        let inputs = document.querySelectorAll("input");
+        let max = inputs[0].getAttribute("maxlength");
+        for (let i = 0; i < inputs.length; ++i) {
+            inputs[i].value.slice(0, max);
+        }
+    }
+    forceMaxLength();
 }
 console.log(wordToGuess);
 function handleGuess() {
