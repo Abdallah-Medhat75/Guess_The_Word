@@ -56,12 +56,21 @@ function inputStyling() {
         inputs[i].onkeydown = function (event) {
             // let currentIndex = inputs.indexOf(event.target); Search Why This One Doesn't Work
             let currentIndex = [...inputs].indexOf(event.target);
-            if (event.key === "ArrowRight" && currentIndex !== inputs.length - 1) {
+            // We Want To Config This Condtion Below Later
+            if (event.key === "ArrowRight") {
                 event.target.blur();
                 inputs[currentIndex + 1].focus();
             } else if (event.key === "ArrowLeft" && currentIndex !== 0) {
                 event.target.blur();
                 inputs[currentIndex - 1].focus();
+            } else if (event.key === "Backspace") {
+                this.value = "";
+                if (currentIndex !== 0) {
+                    this.blur();
+                    inputs[currentIndex - 1].focus();
+                }
+                // IMPORTANT: This One Essential Because it prevents The BackSpace From Removing The Value of the previous input too after reaching it
+                event.preventDefault();
             }
         }
     }
@@ -97,16 +106,14 @@ function handleGuess() {
         const inputField = document.querySelector(`#guess-${currentTry}-letter-${i}`);
         const letter = inputField.value.toLowerCase();
         const actualLetter = wordToGuess[i - 1];
-        if (letter !== "") {
-            if (actualLetter === letter && letter !== "") {
-                inputField.classList.add("in-place");
-            } else if (wordToGuess.includes(letter)) {
-                inputField.classList.add("not-in-place");
-                succesGuess = false;
-            } else {
-                inputField.classList.add("wrong");
-                succesGuess = false;
-            }
+        if (actualLetter === letter) {
+            inputField.classList.add("in-place");
+        } else if (wordToGuess.includes(letter) && letter !== "") {
+            inputField.classList.add("not-in-place");
+            succesGuess = false;
+        } else {
+            inputField.classList.add("wrong");
+            succesGuess = false;
         }
     }
     if (succesGuess) {
@@ -114,6 +121,7 @@ function handleGuess() {
         messageArea.innerHTML = `You Won After <span>${failsNumber}</span> fails`;
         allTries.forEach(tryDiv => tryDiv.classList.add("disabled-inputs"));
         guessButton.disabled = true;
+        hintButton.disabled = true;
     } else {
         failsNumber++;
             document.querySelector(`.try-${currentTry}`).classList.add("disabled-inputs");
@@ -128,6 +136,7 @@ function handleGuess() {
             messageArea.innerHTML = `You Failed The Word is: <span>${wordToGuess}</span>`;
             document.getElementById("fail").play();
             guessButton.disabled = true;
+            hintButton.disabled = true;
         }
     }
 }
@@ -139,19 +148,15 @@ document.onkeydown = function (event) {
 guessButton.addEventListener("click", handleGuess);
 guessButton.addEventListener("click", disablingInputs);
 function hinting() {
-    let inDisabledInputs = document.querySelectorAll(".inputs > div:not(.disabled-inputs) input");
-    if (numberOfHints !== 0 && inDisabledInputs.length !== 0) {
+    let NotDisabledInputs = document.querySelectorAll(".inputs > div:not(.disabled-inputs) input");
+    if (numberOfHints !== 0) {
         let randomIndex = Math.trunc(Math.random() * wordToGuess.length);
-        let stash = randomIndex;
-        // let inActiveInputs = document.querySelectorAll(".inputs > div:not(.disabled-inputs) input");
-        randomIndex = Math.trunc(Math.random() * wordToGuess.length);
-        randomInput = inDisabledInputs[randomIndex];
-        console.log(`This is randomIndex ${randomIndex}`);
-        console.log(`This is the stash ${stash}`);
-        if (randomIndex === stash || randomInput.value !== "") {
-            /* Function Recurion Explain: If The New Random Index Matches === The Old Random Index "Stash" 
-            || The Input Is Not Empty
-            The Function Will Recall Itself Until The Two Conditions Together Doesn't Meet, So The else Will Work
+        console.log(NotDisabledInputs);
+        let randomInput = NotDisabledInputs[randomIndex];
+        // console.log(`This is randomIndex ${randomIndex}`);
+        if (randomInput.value !== "") {
+            /* Function Recurion Explain: IfThe Input Is Not Empty
+                The Function Will Recall Itself Until The Condition Mets, So The else Will Work
             */
             /* NOTE: If You Didn't give specific amount if hints; Once All Inputs Are Filled, An Infinite Function Recursion Will Happen
                     Imagine It As A Loop That Doesn't Have a Condition To Break, an infinite loop will happen
@@ -162,14 +167,15 @@ function hinting() {
             numberOfHints--;
             randomInput.value = wordToGuess[randomIndex].toUpperCase();
             randomInput.style.border = "none";
-            console.log(randomInput);
             hintSpan.innerHTML = numberOfHints;
         }
+    } 
+    if (numberOfHints === 0) {
+        hintButton.disabled = true;
     }
 }
 function hintFocusInput() {
     if (numberOfHints < 3) {
-        console.log("Working");
         let inputs = document.querySelectorAll("input");
         for (let i = 0; i < inputs.length; ++i) {
             inputs[i].oninput = function () {
