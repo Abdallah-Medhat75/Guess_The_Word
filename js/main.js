@@ -101,7 +101,7 @@ window.onload = function () {
         let inputs = document.querySelectorAll("input");
         let max = inputs[0].getAttribute("maxlength");
         for (let i = 0; i < inputs.length; ++i) {
-            inputs[i].value.slice(0, max);
+            inputs[i].value = inputs[i].value.slice(0, max);
         }
     }
     forceMaxLength();
